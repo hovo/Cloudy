@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_gravity="center"
     tools:context="me.khachikyan.cloudy.MainActivity">
 
     <TextView
-        android:id="@+id/json_response"
-        android:layout_width="wrap_content"
+        android:id="@+id/summary_tv"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="summary"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"/>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/temperature_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/summary_tv"
+        android:text="30C"
+        android:textSize="50sp"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"/>
+
+</RelativeLayout>

@@ -4,6 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -16,9 +19,11 @@ public class MainActivity extends AppCompatActivity {
 
     private final OkHttpClient client = new OkHttpClient();
     private static final String API_KEY = "YOUR API KEY HERE";
-    private String url = "https://api.darksky.net/forecast/" + API_KEY + "/37.8267,-122.4233";
+    private String url = "https://api.darksky.net/forecast/" + API_KEY + "/43.6532,-79.381667?units=ca"; // Hardcoded coordinates
 
-    TextView jsonResponse;
+    private TextView summaryTv;
+    private TextView temperatureTv;
+    private WeatherData weatherData;
 
 
     @Override
@@ -26,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        jsonResponse = (TextView) findViewById(R.id.json_response);
+        summaryTv = (TextView) findViewById(R.id.summary_tv);
+        temperatureTv = (TextView) findViewById(R.id.temperature_tv);
 
         Request request = new Request.Builder()
                 .url(url)
@@ -50,12 +56,36 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            jsonResponse.setText(res);
+                            // Initialize weather data
+                            weatherData = getWeatherDetails(res);
+
+                            // Update the view
+                            summaryTv.setText(weatherData.getSummary());
+                            temperatureTv.setText(Double.toString(weatherData.getTemperature()));
                         }
                     });
                 }
             }
         });
 
+    }
+
+    public WeatherData getWeatherDetails(String response) {
+        try {
+            JSONObject rootObject = new JSONObject(response);
+            JSONObject currentConditions = rootObject.getJSONObject("currently");
+
+            double temperature = currentConditions.getDouble("temperature");
+            long time = currentConditions.getLong("time");
+            String summary = currentConditions.getString("summary");
+
+            weatherData = new WeatherData("test location", temperature, time, summary);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return weatherData;
     }
 }
